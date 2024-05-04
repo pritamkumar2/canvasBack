@@ -5,6 +5,7 @@ const contact = async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
+    
     if (!name || !email || !message) {
       return res
         .status(400)

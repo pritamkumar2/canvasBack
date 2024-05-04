@@ -5,7 +5,12 @@ import {
   forget,
 } from "../controllers/login-register/authantication.js";
 import contact from "../controllers/contact/contact.js";
-import allProducts from "../controllers/allProduct/products.js";
+import {
+  allProducts,
+  singleProduct,
+  addProduct,
+  deleteAllProducts
+} from "../controllers/allProduct/products.js";
 import validate from "../middleware/zodValidatemiddleware.js";
 import {
   registerSchema,
@@ -21,4 +26,9 @@ router.route("/login").post(validate(loginSchema), login);
 router.route("/forget").post(validate(forgetSchema), forget);
 router.route("/contact").post(validate(contactSchema), contact);
 router.route("/allProducts").get(allProducts);
+router.route("/singleProducts/:id").get(singleProduct);
+
+
+router.route("/addProduct").post(addProduct);
+router.route("/deleteProduct").delete(deleteAllProducts);
 export default router;

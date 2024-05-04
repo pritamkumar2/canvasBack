@@ -2,11 +2,18 @@ import express from "express";
 import cors from "cors";
 import connectDb from "./utils/Db.js";
 const app = express();
-import router from "./router/auth-router.js";
-const port = 3000;
 app.use(express.json());
+const corsOptions = {
+  origin: `${process.env.FRONTENDLINK}`,
+  methods: "GET,POST,PUT,DELETE,PATCH,HEAD,OPTIONS",
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+import router from "./router/auth-router.js";
+const port = process.env.PORT || 4000;
+
 app.use("/api/", router);
-app.use(cors());
 
 connectDb().then(() => {
   app.listen(port, () => {
