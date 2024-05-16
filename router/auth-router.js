@@ -9,7 +9,7 @@ import {
   allProducts,
   singleProduct,
   addProduct,
-  deleteAllProducts
+  deleteAllProducts,
 } from "../controllers/allProduct/products.js";
 import validate from "../middleware/zodValidatemiddleware.js";
 import {
@@ -19,6 +19,8 @@ import {
   contactSchema,
 } from "../validators/zod-validation.js";
 
+import user from "../controllers/user/user.js";
+import { authMiddleware } from "../middleware/Auth-middelware.js";
 const router = express.Router();
 
 router.route("/register").post(validate(registerSchema), register);
@@ -27,7 +29,8 @@ router.route("/forget").post(validate(forgetSchema), forget);
 router.route("/contact").post(validate(contactSchema), contact);
 router.route("/allProducts").get(allProducts);
 router.route("/singleProducts/:id").get(singleProduct);
-
+router.route("/fire").post();
+router.route("/user").get(authMiddleware, user);
 
 router.route("/addProduct").post(addProduct);
 router.route("/deleteProduct").delete(deleteAllProducts);

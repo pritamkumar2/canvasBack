@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-const userSchema = new mongoose.Schema({
+const fireSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
     required: true,
@@ -10,7 +14,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  password: {
+  photoURL: {
     type: String,
     required: true,
   },
@@ -21,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.generateToken = async function () {
+fireSchema.methods.generateToken = async function () {
   try {
     return jwt.sign(
       {
@@ -35,10 +39,10 @@ userSchema.methods.generateToken = async function () {
       }
     );
   } catch (e) {
-    console.log("error from jwt user model", e);
+    console.log("error from jwt Fire model", e);
   }
 };
 
-const User = mongoose.model("User", userSchema);
+const Fire = mongoose.model("FireBase", fireSchema);
 
-export default User;
+export default Fire;

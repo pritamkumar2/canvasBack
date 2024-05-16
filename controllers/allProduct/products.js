@@ -20,8 +20,6 @@ const allProducts = async (req, res) => {
   }
 };
 
-
-
 const singleProduct = async (req, res) => {
   try {
     const singleProduct = await Product.findOne({
@@ -52,6 +50,7 @@ const addProduct = async (req, res) => {
       discountPercent,
       imageUrl,
       additionalImage,
+      colours,
       category,
       tags,
       isFeatured,
@@ -81,7 +80,7 @@ const addProduct = async (req, res) => {
       price,
       discountPercent,
       imageUrl,
-
+      colours,
       category,
       tags,
       isFeatured,
@@ -109,16 +108,6 @@ const deleteAllProducts = async (req, res) => {
   }
 };
 
-
-
-// filters of product page 
-
-
-
-
-
-
-
-
+// filters of product page
 
 export { allProducts, singleProduct, addProduct, deleteAllProducts };
