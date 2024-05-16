@@ -8,7 +8,7 @@ const user = async (req, res) => {
   }
 };
 
-const FireUser = (req, res) => {
+const fireUsers = (req, res) => {
   try {
     const userData = req.user;
     console.log(userData);
@@ -16,7 +16,6 @@ const FireUser = (req, res) => {
   } catch (error) {
     console.log("error for FireUser controller", error);
   }
-}
+};
 
-
-export default user;
+export { user, fireUsers };

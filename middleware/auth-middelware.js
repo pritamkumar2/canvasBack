@@ -28,6 +28,7 @@ export const authMiddleware = async (req, res, next) => {
           const userData = await User.findOne({ email: req.user.email }).select(
             { password: 0 }
           );
+          console.log(userData);
 
           req.user = userData;
           req.token = token;
@@ -63,7 +64,7 @@ export const FireAuthMiddleware = async (req, res, next) => {
     }
 
     // Ensure the SIGNATURE environment variable is set
-    const secretKey = process.env.SIGNATURE; // Assuming this is the correct variable name
+    const secretKey = process.env.SIGNTURE; // Assuming this is the correct variable name
     console.log("Signature environment variable", secretKey);
     if (!secretKey) {
       return res.status(500).json({ message: "JWT secret key not provided" });
