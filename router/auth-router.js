@@ -19,25 +19,48 @@ import {
   forgetSchema,
   contactSchema,
 } from "../validators/zod-validation.js";
-
 import { user, fireUsers } from "../controllers/user/user.js";
 import {
   authMiddleware,
   FireAuthMiddleware,
 } from "../middleware/Auth-middelware.js";
+import {
+  getCart,
+  addCart,
+  removeCartItem,
+  increaseQuantity,
+  decreaseQuantity,
+} from "../controllers/cart/cart.js";
+
 const router = express.Router();
 
+// Authentication routes
 router.route("/register").post(validate(registerSchema), register);
 router.route("/login").post(validate(loginSchema), login);
 router.route("/forget").post(validate(forgetSchema), forget);
 router.route("/fireUser").post(fireUser);
 
+// Contact route
 router.route("/contact").post(validate(contactSchema), contact);
+
+// Product routes
 router.route("/allProducts").get(allProducts);
 router.route("/singleProducts/:id").get(singleProduct);
+
+// Admin route to add product
+
+router.route("/addProduct").post(addProduct); // Admin route to add product
+router.route("/deleteProduct").delete(deleteAllProducts); // Admin route to delete all products
+
+// User routes with authentication middleware
 router.route("/fire").get(FireAuthMiddleware, fireUsers);
 router.route("/user").get(authMiddleware, user);
 
-router.route("/addProduct").post(addProduct);
-router.route("/deleteProduct").delete(deleteAllProducts);
+// Cart routes
+router.route("/addCart/:userId").post(addCart);
+router.route("/getCart/:userId").get(getCart);
+router.route("/removeCartItem/:userId/:productId").delete(removeCartItem);
+router.route("/api/increasequantity/:userId/:itemId").patch(increaseQuantity);
+router.route("/api/decreasequantity/:userId/:itemId").patch(decreaseQuantity);
+
 export default router;
