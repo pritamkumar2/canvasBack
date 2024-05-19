@@ -60,7 +60,7 @@ router.route("/user").get(authMiddleware, user);
 router.route("/addCart/:userId").post(addCart);
 router.route("/getCart/:userId").get(getCart);
 router.route("/removeCartItem/:userId/:productId").delete(removeCartItem);
-router.route("/api/increasequantity/:userId/:itemId").patch(increaseQuantity);
-router.route("/api/decreasequantity/:userId/:itemId").patch(decreaseQuantity);
+router.route("/increasequantity/:userId/:itemId").patch(increaseQuantity);
+router.route("/decreasequantity/:userId/:itemId").patch(decreaseQuantity);
 
 export default router;
