@@ -21,6 +21,18 @@ const addCart = async (req, res) => {
   const { userId } = req.params;
   const { id, name, image, amount, size, colour, product, quantity } = req.body;
 
+  console.log("Request received:", {
+    userId,
+    id,
+    name,
+    image,
+    amount,
+    size,
+    colour,
+    product,
+    quantity,
+  });
+
   // Validate required fields
   if (
     !userId ||
@@ -62,6 +74,7 @@ const addCart = async (req, res) => {
     const savedCartItem = await newCartItem.save();
     res.status(201).json(savedCartItem);
   } catch (error) {
+    console.error("Error adding item to cart:", error);
     res.status(500).json({ message: "Error adding item to cart", error });
   }
 };

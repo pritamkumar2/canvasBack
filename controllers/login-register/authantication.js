@@ -72,22 +72,25 @@ const fireUser = async (req, res) => {
   try {
     const { id, username, email, photoURL } = req.body;
 
+    // Validate required fields
+    if (!id || !username || !email || !photoURL) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     let user = await Fire.findOne({ email: email });
     if (user) {
-      
       return res.status(200).json({
         message: "User login successfully",
         token: await user.generateToken(),
         user: user._id.toString(),
       });
     } else {
-    
       const newUser = new Fire({
-        _id: id,
+        id: id,
         username: username,
         email: email,
         photoURL: photoURL,
-        isAdmin: false, 
+        isAdmin: false,
       });
 
       await newUser.save();
@@ -103,6 +106,5 @@ const fireUser = async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 };
-
 
 export { login, register, forget, fireUser };
