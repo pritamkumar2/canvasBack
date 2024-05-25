@@ -32,6 +32,7 @@ import {
   decreaseQuantity,
 } from "../controllers/cart/cart.js";
 
+import userOrder from "../controllers/order/orders.js";
 const router = express.Router();
 
 // Authentication routes
@@ -47,10 +48,14 @@ router.route("/contact").post(validate(contactSchema), contact);
 router.route("/allProducts").get(allProducts);
 router.route("/singleProducts/:id").get(singleProduct);
 
+//  user orders routes
+
+router.route("/saveOrder").post(userOrder);
+
 // Admin route to add product
 
 router.route("/addProduct").post(addProduct); // Admin route to add product
-router.route("/deleteProduct").delete(deleteAllProducts); // Admin route to delete all products
+// router.route("/deleteProduct").delete(deleteAllProducts); // Admin route to delete all products
 
 // User routes with authentication middleware
 router.route("/fire").get(FireAuthMiddleware, fireUsers);
