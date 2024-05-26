@@ -33,6 +33,11 @@ import {
 } from "../controllers/cart/cart.js";
 
 import userOrder from "../controllers/order/orders.js";
+import {
+  Checkout,
+  paymentVerification,
+  rzpGetKey,
+} from "../controllers/checkout/checkout.js";
 const router = express.Router();
 
 // Authentication routes
@@ -51,7 +56,9 @@ router.route("/singleProducts/:id").get(singleProduct);
 //  user orders routes
 
 router.route("/saveOrder").post(userOrder);
-
+router.route("/checkout").post(Checkout);
+router.route("/paymentverification").post(paymentVerification);
+router.route("/getkey").get(rzpGetKey);
 // Admin route to add product
 
 router.route("/addProduct").post(addProduct); // Admin route to add product
