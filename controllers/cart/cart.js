@@ -1,4 +1,4 @@
-import CartItem from "../../models/cart-model.js";
+import { CartItem } from "../../models/cart-model.js";
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Types;
 // Get all cart items for a user
