@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import connectDb from "./utils/Db.js";
-import Razorpay from "razorpay";
+
 import bodyParser from "body-parser";
 const app = express();
 
@@ -14,10 +14,7 @@ const corsOptions = {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
-export const instance = new Razorpay({
-  key_id: process.env.RZP_APIKEY,
-  key_secret: process.env.RZP_APISECRET,
-});
+
 import router from "./router/auth-router.js";
 const port = process.env.PORT || 4000;
 

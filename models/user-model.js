@@ -2,43 +2,17 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
+  username: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  otp: { type: String },
+  otpVerified: { type: Boolean, default: false },
 });
 
-userSchema.methods.generateToken = async function () {
-  try {
-    return jwt.sign(
-      {
-        userId: this.username.toString(),
-        email: this.email,
-        isAdmin: this.isAdmin,
-      },
-      process.env.SIGNTURE,
-      {
-        expiresIn: "30d",
-      }
-    );
-  } catch (e) {
-    console.log("error from jwt user model", e);
-  }
+userSchema.methods.generateToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
 };
 
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.model("User", userSchema);

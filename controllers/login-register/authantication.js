@@ -1,31 +1,9 @@
 import User from "../../models/user-model.js";
-import Fire from "../../models/fireBaseUser.js";
+import sendEmail from "../Nodemailer/sendEmail.js";
 import bcrypt from "bcrypt";
 
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      return res.status(400).json({ message: "Invalid username or password" });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid username or password" });
-    }
-
-    res.status(200).json({
-      message: "User login successfully",
-      token: await user.generateToken(),
-      user: user._id.toString(),
-    });
-  } catch (err) {
-    console.error("Error from login route", err);
-    res.status(500).send("Internal Server Error");
-  }
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 const register = async (req, res) => {
@@ -39,23 +17,59 @@ const register = async (req, res) => {
 
     const saltRound = 10;
     const hash_password = await bcrypt.hash(password, saltRound);
+    const otp = generateOTP(); // Generate OTP
 
     const newUser = new User({
       username: username,
       email: email,
       password: hash_password,
+      otp, // Save the OTP
+      isVerified: false, // Add a field to track verification status
     });
 
     await newUser.save();
 
+    // Send OTP email
+    await sendEmail(email, "Email Verification", `Your OTP is ${otp}`);
+
     return res.status(201).json({
-      message: "User registered successfully",
-      token: await newUser.generateToken(),
+      message: "User registered successfully. Please check your email for OTP.",
       user: newUser._id.toString(),
     });
   } catch (e) {
     console.error("Error from register route", e);
     return res.status(500).send("Internal Server Error");
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid username or password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid username or password" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User login successfully",
+      token: await user.generateToken(),
+      user: user._id.toString(),
+    });
+  } catch (err) {
+    console.error("Error from login route", err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -68,43 +82,27 @@ const forget = (req, res) => {
   }
 };
 
-const fireUser = async (req, res) => {
+const verifyOtp = async (req, res) => {
   try {
-    const { id, username, email, photoURL } = req.body;
+    const { userId, otp } = req.body;
+    const user = await User.findById(userId);
 
-    // Validate required fields
-    if (!id || !username || !email || !photoURL) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!user || user.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    let user = await Fire.findOne({ email: email });
-    if (user) {
-      return res.status(200).json({
-        message: "User login successfully",
-        token: await user.generateToken(),
-        user: user._id.toString(),
-      });
-    } else {
-      const newUser = new Fire({
-        id: id,
-        username: username,
-        email: email,
-        photoURL: photoURL,
-        isAdmin: false,
-      });
+    user.isVerified = true;
+    user.otp = null; // Clear the OTP after successful verification
+    await user.save();
 
-      await newUser.save();
-
-      return res.status(201).json({
-        message: "User registered successfully",
-        token: await newUser.generateToken(),
-        user: newUser._id.toString(),
-      });
-    }
-  } catch (e) {
-    console.error("Error from fireUser route", e);
-    return res.status(500).send("Internal Server Error");
+    res.status(200).json({
+      message: "Email verified successfully",
+      token: await user.generateToken(),
+    });
+  } catch (err) {
+    console.error("Error from verifyOtp route", err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
-export { login, register, forget, fireUser };
+export { login, register, forget, verifyOtp };
